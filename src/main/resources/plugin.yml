@@ -1,0 +1,4 @@
+name: SoundTroller
+version: '${project.version}'
+main: me.soundtroller.soundtroller.SoundTroller
+description: This plugin allows players to receive minecraft sounds at the request of a command.

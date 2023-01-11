@@ -2,3 +2,10 @@ name: SoundTroller
 version: '${project.version}'
 main: me.soundtroller.soundtroller.SoundTroller
 description: This plugin allows players to receive minecraft sounds at the request of a command.
+commands:
+  soundtroll:
+    description: This plugin allows players to receive minecraft sounds at the request of a command.
+    usage: /soundtroll player <player> <alias>, /soundtroll random/all <alias>
+    permission: soundtroll.use
+    permission-message: You do not have permission to use this command.
+    aliases: []

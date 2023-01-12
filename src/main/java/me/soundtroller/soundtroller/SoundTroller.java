@@ -31,6 +31,10 @@ public final class SoundTroller extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        for (Sound sound : Sound.values()) {
+            System.out.println(sound.name());
+        }
+
         // Load the categories and rules from the config file
         loadConfig();
 
@@ -139,7 +143,7 @@ public final class SoundTroller extends JavaPlugin {
             Bukkit.getServer().getConsoleSender().sendMessage(sw.toString());
             return true;
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sound (collections) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (1.8.8-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.8 or at least 1.8.8 minecraft. Please check the console for the full stack trace.");
+            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sound (collections) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.8 or at least 1.8.8 minecraft. Please check the console for the full stack trace.");
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             indexOutOfBoundsException.printStackTrace(pw);

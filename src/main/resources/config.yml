@@ -1333,36 +1333,7 @@ aliases:
   - crazysounds
 sounds:
   creeperdeath:
-    - CREEPER_HISS
-    - CREEPER_DEATH
+  - ENTITY_CREEPER_DEATH
+  - ENTITY_CREEPER_HURT
   wolfwhine:
     - WOLF_WHINE
-  chesttroll:
-    - CHEST_CLOSE
-    - CHEST_OPEN
-  crazysounds:
-    - HORSE_DEATH
-    - HORSE_GALLOP
-    - HORSE_HIT
-    - HORSE_IDLE
-    - HORSE_JUMP
-    - HORSE_LAND
-    - HORSE_SADDLE
-    - HORSE_SOFT
-    - HORSE_WOOD
-    - DONKEY_ANGRY
-    - DONKEY_DEATH
-    - DONKEY_HIT
-    - DONKEY_IDLE
-    - HORSE_SKELETON_DEATH
-    - HORSE_SKELETON_HIT
-    - HORSE_SKELETON_IDLE
-    - HORSE_ZOMBIE_DEATH
-    - HORSE_ZOMBIE_HIT
-    - HORSE_ZOMBIE_IDLE
-    - VILLAGER_DEATH
-    - VILLAGER_HAGGLE
-    - VILLAGER_HIT
-    - VILLAGER_IDLE
-    - VILLAGER_NO
-    - VILLAGER_YES

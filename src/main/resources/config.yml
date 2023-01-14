@@ -1329,8 +1329,6 @@
 aliases:
   - creeperdeath
   - wolfwhine
-  - chesttroll
-  - crazysounds
 sounds:
   creeperdeath:
   - ENTITY_CREEPER_DEATH

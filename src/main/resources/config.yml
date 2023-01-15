@@ -1,4 +1,5 @@
-# The plugin's one and only permission for all commands is soundtroller.use.
+# The plugin's one and only permission for all regular troll commands is soundtroller.troll, and the one and only permission for all troll voucher commands is soundtroller.voucher.
+# I plan on adding a ton more sound customization at some point.
 # When providing data to the plugin use the demonstrated format down below.
 # For the aliases and sounds (categories), use fully lowercase entries. For the individual sounds, use fully uppercase.
 # Caps insensitivity may or may not work, and may be implemented in a future version of this plugin.

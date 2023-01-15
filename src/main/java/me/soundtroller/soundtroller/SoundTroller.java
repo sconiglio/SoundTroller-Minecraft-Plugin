@@ -84,9 +84,6 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 
         String displayName = meta.getDisplayName();
         if (!displayName.startsWith(ChatColor.GREEN +"SoundTroller Voucher - ")) {
-            System.out.println("line 92");
-            System.out.println("Actual display name: " + displayName);
-            System.out.println("What it should start with:" + ChatColor.GREEN + "SoundTroller Voucher - ");
             return;
         }
 
@@ -140,16 +137,6 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             sb.append(args[4]);
                             sb.append(" ");
                             String aliasAndPlayer = sb.toString().trim();
-
-//                            List<Player> onlinePlayers = (List<Player>) Bukkit.getServer().getOnlinePlayers();
-//                            System.out.println("Hello");
-//                            for(Player player2 : onlinePlayers){
-//                                System.out.println(player2.getName());
-//                            }
-//                            if (!(onlinePlayers.contains(args[2]))){
-//                                sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "The player that is to receive this voucher is not online. Please wait for the player to log onto the server, or select a different player. Or, you made a typo in your command.");
-//                                return true;
-//                            }
 
                             // Create the voucher item and add it to the player's inventory
                             ItemStack voucher = new ItemStack(Material.PAPER);
@@ -217,8 +204,6 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             List<String> aliasSounds = sounds.get(index);
 
                             List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
-                            System.out.println("hello");
-                            System.out.println(onlinePlayers);
                             for (Player player : onlinePlayers) {
                                 for (String sound : aliasSounds) {
                                     Sound soundEnumValue = Sound.valueOf(sound);

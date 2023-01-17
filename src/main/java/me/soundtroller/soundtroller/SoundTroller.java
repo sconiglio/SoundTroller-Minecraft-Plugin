@@ -1,5 +1,7 @@
 package me.soundtroller.soundtroller;
 
+//import net.luckperms.api.LuckPerms;
+
 import org.bukkit.*;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -10,6 +12,8 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.permissions.PermissionAttachmentInfo;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.Sound;
@@ -37,6 +41,12 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+//        RegisteredServiceProvider<LuckPerms> provider = Bukkit.getServicesManager().getRegistration(LuckPerms.class);
+//        if (provider != null) {
+//            LuckPerms api = provider.getProvider();
+//
+//        }
+
         // Load the categories and rules from the config file
         loadConfig();
 
@@ -56,10 +66,6 @@ public final class SoundTroller extends JavaPlugin implements Listener {
     @Override
     public void onDisable() {
         getServer().getConsoleSender().sendMessage(getPluginNamePrefix() + ChatColor.RED + "Plugin is disabled!");
-    }
-
-    public String getPluginNamePrefix() {
-        return (ChatColor.BLACK + "[" + ChatColor.DARK_GREEN + "SoundTroller" + ChatColor.BLACK + "] " + ChatColor.RESET);
     }
 
     @EventHandler
@@ -96,39 +102,38 @@ public final class SoundTroller extends JavaPlugin implements Listener {
         item.setAmount(item.getAmount() - 1);
     }
 
-
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         try{
+            for (PermissionAttachmentInfo permission : sender.getEffectivePermissions()){
+                System.out.println(permission.getPermission());
+            }
             if(args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher") && sender.hasPermission("soundtroller.troll")){
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller player <player> <alias>, /soundtroller random/all <alias>, /soundtroller voucher player <receiver> <player> <alias>, /soundtroller voucher random/all <receiver> <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
+                sender.sendMessage(baseSoundTrollerCommandNoParamMessage());
                 return true;
             } else if (args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.troll")) {
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller player <player> <alias>, /soundtroller random/all <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
+                sender.sendMessage(trollSoundTrollerCommandNoParamMessage());
                 return true;
             } else if (args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher")) {
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller voucher player <receiver> <player> <alias>, /soundtroller voucher random/all <receiver> <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
+                sender.sendMessage(voucherSoundTrollerCommandNoParamMessage());
                 return true;
             }
             if (cmd.getName().equalsIgnoreCase("soundtroller")) {
+                String alias = args[args.length - 1];
+
                 if ("voucher".equals(args[0])) {
-                    if (!sender.hasPermission("soundtroller.voucher")) {
+                    String aliasBaseVoucherAliasPermission = "soundtroller.voucher." + alias;
+
+                    if (!(sender instanceof Player)) {
+                        sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "This command can only be used by players.");
                         return true;
-                    } else if (sender.hasPermission("soundtroller.voucher")) {
-                        if (!(sender instanceof Player)) {
-                            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "This command can only be used by players.");
-                            return true;
-                        }
+                    }
 
-                        // Check if the player provided a valid command to execute
-                        if (args.length == 0 || args.length == 1) {
-                            sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller voucher player <receiver> <player> <alias>, /soundtroller voucher random/all <receiver> <alias>");
-                            return true;
-                        }
+                    Player player = (Player) Bukkit.getPlayer(args[2]);
 
-                        Player player = (Player) Bukkit.getPlayer(args[2]);
-
-                        if ("player".equals(args[1])) {
+                    if ("player".equals(args[1])) {
+                        String aliasPlayerVoucherAliasPermission = "soundtroller.voucher.player." + alias;
+                        if ((sender.hasPermission("soundtroller.voucher")) || (sender.hasPermission(aliasBaseVoucherAliasPermission)) || (sender.hasPermission("soundtroller.voucher.player")) || (sender.hasPermission(aliasPlayerVoucherAliasPermission))) {
                             StringBuilder sb = new StringBuilder();
                             sb.append(args[1]);
                             sb.append(" ");
@@ -148,7 +153,13 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             player.sendMessage(getPluginNamePrefix() + ChatColor.GREEN + "You have been given a voucher that can be used to execute a soundtroller command for the following alias and player: " + args[3] + " " + args[4]);
 
                             return true;
-                        } else if ("random".equals(args[1]) || "all".equals(args[1])) {
+                        } else if ((!(sender.hasPermission("soundtroller.voucher"))) && (!(sender.hasPermission(aliasBaseVoucherAliasPermission))) && (!(sender.hasPermission("soundtroller.voucher.player"))) && (!(sender.hasPermission(aliasPlayerVoucherAliasPermission)))) {
+                            sender.sendMessage(invalidPermissionsMessage());
+                            return true;
+                        }
+                    } else if ("random".equals(args[1])) {
+                        String aliasRandomVoucherAliasPermission = "soundtroller.voucher.random." + alias;
+                        if ((sender.hasPermission("soundtroller.voucher")) || (sender.hasPermission(aliasBaseVoucherAliasPermission)) || (sender.hasPermission("soundtroller.voucher.random")) || (sender.hasPermission(aliasRandomVoucherAliasPermission))) {
                             StringBuilder sb = new StringBuilder();
                             sb.append(args[1]);
                             sb.append(" ");
@@ -166,27 +177,47 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             player.sendMessage(getPluginNamePrefix() + ChatColor.GREEN + "You have been given a voucher that can be used to execute a soundtroller command for the following alias and player condition: " + aliasAndRandomOrAll);
 
                             return true;
-                        }
-                        return true;
-                    }
-                }
-                if ("player".equals(args[0]) || "random".equals(args[0]) || "all".equals(args[0])) {
-                    if (!sender.hasPermission("soundtroller.troll")) {
-                        sender.sendMessage(permissionMessage);
-                        return true;
-                    } else if (sender.hasPermission("soundtroller.troll")) {
-
-                        // Check if the player provided a category name
-                        if (args.length == 0 || args.length == 1) {
-                            sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller player <player> <alias>, /soundtroller random/all <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
+                        } else if ((!(sender.hasPermission("soundtroller.voucher"))) && (!(sender.hasPermission(aliasBaseVoucherAliasPermission))) && (!(sender.hasPermission("soundtroller.voucher.random"))) && (!(sender.hasPermission(aliasRandomVoucherAliasPermission)))){
+                            sender.sendMessage(invalidPermissionsMessage());
                             return true;
                         }
+                    } else if ("all".equals(args[1])) {
+                        String aliasAllVoucherAliasPermission = "soundtroller.voucher.all." + alias;
+                        if ((sender.hasPermission("soundtroller.voucher")) || (sender.hasPermission(aliasBaseVoucherAliasPermission)) || (sender.hasPermission("soundtroller.voucher.all")) || (sender.hasPermission(aliasAllVoucherAliasPermission))) {
+                            StringBuilder sb = new StringBuilder();
+                            sb.append(args[1]);
+                            sb.append(" ");
+                            sb.append(args[3]);
+                            sb.append(" ");
+                            String aliasAndRandomOrAll = sb.toString().trim();
 
-                        if (args[0].toLowerCase().equals("player")) {
+                            // Create the voucher item and add it to the player's inventory
+                            ItemStack voucher = new ItemStack(Material.PAPER, 1);
+                            ItemMeta meta = voucher.getItemMeta();
+                            meta.setDisplayName(ChatColor.GREEN + "SoundTroller Voucher - " + aliasAndRandomOrAll);
+                            voucher.setItemMeta(meta);
+                            player.getInventory().addItem(voucher);
+
+                            player.sendMessage(getPluginNamePrefix() + ChatColor.GREEN + "You have been given a voucher that can be used to execute a soundtroller command for the following alias and player condition: " + aliasAndRandomOrAll);
+
+                            return true;
+                        } else if ((!(sender.hasPermission("soundtroller.voucher"))) && (!(sender.hasPermission(aliasBaseVoucherAliasPermission))) && (!(sender.hasPermission("soundtroller.voucher.random"))) && (!(sender.hasPermission(aliasAllVoucherAliasPermission)))){
+                            sender.sendMessage(invalidPermissionsMessage());
+                            return true;
+                        }
+                    } else {
+                        sender.sendMessage(invalidCommandMessage());
+                        return true;
+                    }
+                    return true;
+                } else if ("player".equals(args[0]) || "random".equals(args[0]) || "all".equals(args[0])) {
+                    String aliasBaseTrollAliasPermission = "soundtroller.troll." + alias;
+                    if (args[0].toLowerCase().equals("player")) {
+                        String aliasPlayerTrollAliasPermission = "soundtroller.troll.player." + alias;
+                        if((sender.hasPermission("soundtroller.troll")) || (sender.hasPermission(aliasBaseTrollAliasPermission)) || (sender.hasPermission("soundtroller.troll.player")) || (sender.hasPermission(aliasPlayerTrollAliasPermission))) {
                             String playerName = args[1].toLowerCase();
                             Player player = Bukkit.getPlayer(playerName);
 
-                            String alias = args[2].toLowerCase();
                             int index = aliases.indexOf(alias);
                             List<String> aliasSounds = sounds.get(index);
 
@@ -197,9 +228,14 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             }
                             sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Trolled " + player.getName() + " with " + String.join(", and ", aliasSounds));
                             return true;
-                        } else if (args[0].toLowerCase().equals("all")) {
-
-                            String alias = args[1].toLowerCase();
+                        } else if ((!(sender.hasPermission("soundtroller.troll"))) && (!(sender.hasPermission(aliasBaseTrollAliasPermission))) && (!(sender.hasPermission("soundtroller.troll.player"))) && (!(sender.hasPermission(aliasPlayerTrollAliasPermission)))) {
+                            sender.sendMessage(invalidPermissionsMessage());
+                            return true;
+                        }
+                    } else if (args[0].toLowerCase().equals("all")) {
+                        String aliasAllTrollAliasPermission = "soundtroller.troll.all." + alias;
+                        if ((sender.hasPermission("soundtroller.troll")) || (sender.hasPermission(aliasBaseTrollAliasPermission)) || (sender.hasPermission("soundtroller.troll.all")) || (sender.hasPermission(aliasAllTrollAliasPermission))) {
+                            alias = args[1].toLowerCase();
                             int index = aliases.indexOf(alias);
                             List<String> aliasSounds = sounds.get(index);
 
@@ -213,9 +249,14 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                 sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Trolled " + player.getName() + " with " + String.join(", and ", aliasSounds));
                             }
                             return true;
-                        } else if (args[0].toLowerCase().equals("random")) {
-
-                            String alias = args[1].toLowerCase();
+                        } else if ((!(sender.hasPermission("soundtroller.troll"))) && (!(sender.hasPermission(aliasBaseTrollAliasPermission))) && (!(sender.hasPermission("soundtroller.troll.player"))) && (!(sender.hasPermission(aliasAllTrollAliasPermission)))) {
+                            sender.sendMessage(invalidPermissionsMessage());
+                            return true;
+                        }
+                    } else if (args[0].toLowerCase().equals("random")) {
+                        String aliasRandomTrollAliasPermission = "soundtroller.troll.random." + alias;
+                        if ((sender.hasPermission("soundtroller.troll")) || (sender.hasPermission(aliasBaseTrollAliasPermission)) || (sender.hasPermission("soundtroller.troll.random")) || (sender.hasPermission(aliasRandomTrollAliasPermission))) {
+                            alias = args[1].toLowerCase();
                             int index = aliases.indexOf(alias);
                             List<String> aliasSounds = sounds.get(index);
 
@@ -230,22 +271,18 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             }
                             sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Trolled " + player.getName() + " with " + String.join(", and ", aliasSounds));
                             return true;
-                        } else {
-                            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "Invalid command. Please do /soundtroll for details on how to use a correct command.");
+                        } else if ((!(sender.hasPermission("soundtroller.troll"))) && (!(sender.hasPermission(aliasBaseTrollAliasPermission))) && (!(sender.hasPermission("soundtroller.troll.player"))) && (!(sender.hasPermission(aliasRandomTrollAliasPermission)))) {
+                            sender.sendMessage(invalidPermissionsMessage());
+                            return true;
                         }
+                    } else {
+                        sender.sendMessage(invalidCommandMessage());
                         return true;
                     }
+                    return true;
+                } else {
+                    sender.sendMessage(noPermissionsMessage());
                 }
-            }
-            if(args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher") && sender.hasPermission("soundtroller.troll")){
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller player <player> <alias>, /soundtroller random/all <alias>, /soundtroller voucher player <receiver> <player> <alias>, /soundtroller voucher random/all <receiver> <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
-                return true;
-            } else if (args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.troll")) {
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller player <player> <alias>, /soundtroller random/all <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
-                return true;
-            } else if (args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher")) {
-                sender.sendMessage(getPluginNamePrefix() + ChatColor.AQUA + "Usage: /soundtroller voucher player <receiver> <player> <alias>, /soundtroller voucher random/all <receiver> <alias> | Available Sound Aliases (Categories): " + String.join(", ", aliases));
-                return true;
             }
             return true;
         } catch (IllegalArgumentException illegalArgumentException) {
@@ -253,14 +290,14 @@ public final class SoundTroller extends JavaPlugin implements Listener {
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             illegalArgumentException.printStackTrace(pw);
-            Bukkit.getServer().getConsoleSender().sendMessage(sw.toString());
+            Bukkit.getServer().getLogger().severe(sw.toString());
             return true;
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
             sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sounds (aliases) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.8 or at least 1.8.8 minecraft. Please check the console for the full stack trace.");
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             indexOutOfBoundsException.printStackTrace(pw);
-            Bukkit.getServer().getConsoleSender().sendMessage(sw.toString());
+            Bukkit.getServer().getLogger().severe(sw.toString());
             return true;
         }
     }
@@ -299,5 +336,56 @@ public final class SoundTroller extends JavaPlugin implements Listener {
         if (index != -1) {
             sounds.get(index).add(sound);
         }
+    }
+
+    public String getPluginNamePrefix() {
+        return (ChatColor.BLACK + "[" + ChatColor.DARK_GREEN + "SoundTroller" + ChatColor.BLACK + "] " + ChatColor.RESET);
+    }
+
+    public String invalidCommandMessage() {
+        return (getPluginNamePrefix() + ChatColor.RED + "Invalid command. Please do /soundtroll for details on how to use a correct command.");
+    }
+
+    public String invalidPermissionsMessage() {
+        return (getPluginNamePrefix() + ChatColor.RED + "Invalid permissions. Please do /soundtroll for details on how to use a command that you have access to.");
+    }
+
+    public String noPermissionsMessage() {
+        return (getPluginNamePrefix() + ChatColor.RED + "You do not have the permissions for any SoundTroller commands.");
+    }
+
+    public String baseSoundTrollerCommandNoParamMessage(){
+        return  (ChatColor.DARK_PURPLE + "-------------------" + ((getPluginNamePrefix()).replaceAll(" ", "")) + ChatColor.DARK_PURPLE + "-------------------" + "\n" +
+//                ChatColor.LIGHT_PURPLE + "----------" + ChatColor.GREEN + "[Help for command \"" + ChatColor.DARK_GREEN + "soundtroller" + ChatColor.GREEN +  " \"]" + ChatColor.LIGHT_PURPLE + "----------" + ChatColor.AQUA + "\n" +
+                ChatColor.DARK_PURPLE + "Usage: " + "\n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "player <player> <alias>, \n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "random/all <alias>, \n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher player <receiver> <player> <alias>, \n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher random/all <receiver> <alias> \n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n" +
+                ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", aliases) + "\n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------");
+    }
+
+    public String trollSoundTrollerCommandNoParamMessage(){
+        return  (ChatColor.DARK_PURPLE + "-------------------" + ((getPluginNamePrefix()).replaceAll(" ", "")) + ChatColor.DARK_PURPLE + "-------------------" + "\n" +
+//                ChatColor.LIGHT_PURPLE + "----------" + ChatColor.GREEN + "[Help for command \"" + ChatColor.DARK_GREEN + "soundtroller" + ChatColor.GREEN +  " \"]" + ChatColor.LIGHT_PURPLE + "----------" + ChatColor.AQUA + "\n" +
+                ChatColor.DARK_PURPLE + "Usage: " + "\n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "player <player> <alias>, \n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "random/all <alias>, \n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n" +
+                ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", aliases) + "\n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------");
+    }
+
+    public String voucherSoundTrollerCommandNoParamMessage(){
+        return  (ChatColor.DARK_PURPLE + "-------------------" + ((getPluginNamePrefix()).replaceAll(" ", "")) + ChatColor.DARK_PURPLE + "-------------------" + "\n" +
+//                ChatColor.LIGHT_PURPLE + "----------" + ChatColor.GREEN + "[Help for command \"" + ChatColor.DARK_GREEN + "soundtroller" + ChatColor.GREEN +  " \"]" + ChatColor.LIGHT_PURPLE + "----------" + ChatColor.AQUA + "\n" +
+                ChatColor.DARK_PURPLE + "Usage: " + "\n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher player <receiver> <player> <alias>, \n" +
+                ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher random/all <receiver> <alias> \n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n" +
+                ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", aliases) + "\n" +
+                ChatColor.DARK_PURPLE + "--------------------------------------------------");
     }
 }

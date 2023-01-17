@@ -3,6 +3,7 @@ version: '${project.version}'
 api-version: 1.19
 main: me.soundtroller.soundtroller.SoundTroller
 description: This plugin allows players to receive minecraft sounds at the request of a command.
+#depend: [LuckPerms]
 commands:
   soundtroller:
     description: This plugin allows players to receive minecraft sounds at the request of a command.

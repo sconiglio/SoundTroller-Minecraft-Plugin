@@ -110,6 +110,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //            }
             if(args.length == 0) {
                 sender.sendMessage(noPermissionsMessage());
+                return true;
             }
             if(args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher") && sender.hasPermission("soundtroller.troll")){
                 sender.sendMessage(baseSoundTrollerCommandNoParamMessage());

@@ -105,8 +105,11 @@ public final class SoundTroller extends JavaPlugin implements Listener {
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
         try{
-            for (PermissionAttachmentInfo permission : sender.getEffectivePermissions()){
-                System.out.println(permission.getPermission());
+//            for (PermissionAttachmentInfo permission : sender.getEffectivePermissions()){
+//                System.out.println(permission.getPermission());
+//            }
+            if(args.length == 0) {
+                sender.sendMessage(noPermissionsMessage());
             }
             if(args.length == 0 && cmd.getName().equalsIgnoreCase("soundtroller") && sender.hasPermission("soundtroller.voucher") && sender.hasPermission("soundtroller.troll")){
                 sender.sendMessage(baseSoundTrollerCommandNoParamMessage());
@@ -293,7 +296,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
             Bukkit.getServer().getLogger().severe(sw.toString());
             return true;
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
-            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sounds (aliases) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.8 or at least 1.8.8 minecraft. Please check the console for the full stack trace.");
+            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sounds (aliases) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (1.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.19 or at least 1.19.2 minecraft. Please check the console for the full stack trace.");
             StringWriter sw = new StringWriter();
             PrintWriter pw = new PrintWriter(sw);
             indexOutOfBoundsException.printStackTrace(pw);

@@ -1336,3 +1336,9 @@ sounds:
   - ENTITY_CREEPER_HURT
   wolfwhine:
     - WOLF_WHINE
+
+voucherNames:
+  creeperdeath:
+    - '&5Dying Creeper Voucher Name|Dying Creeper Lore'
+  wolfwhine:
+    - '&5Wolf Whine Voucher Name|Wolf Whine Lore'

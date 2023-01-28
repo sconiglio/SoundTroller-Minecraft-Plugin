@@ -308,13 +308,13 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             }
                             ArrayList<String> loreArrayList = new ArrayList<>();
                             for(String string : namesAndLores.get(index).get(0).get(1).split(" ")){
-                                loreArrayList.add(string);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', string));
                             }
                             if(customVoucherLore.equals("")) {
                                 meta.setLore(loreArrayList);
                             } else {
                                 loreArrayList.clear();
-                                loreArrayList.add(customVoucherLore);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', customVoucherLore));
                                 meta.setLore(loreArrayList);
                             }
                             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -399,6 +399,8 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             ItemStack voucher = new ItemStack(Material.PAPER, 1);
                             ItemMeta meta = voucher.getItemMeta();
                             int index = aliases.indexOf(alias);
+//                            System.out.println("aliases: " + aliases);
+//                            System.out.println("namesAndLores: " + namesAndLores);
                             if(customVoucherName.equals("")) {
                                 meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', namesAndLores.get(index).get(0).get(0)));
                             } else {
@@ -406,13 +408,13 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             }
                             ArrayList<String> loreArrayList = new ArrayList<>();
                             for(String string : namesAndLores.get(index).get(0).get(1).split(" ")){
-                                loreArrayList.add(string);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', string));
                             }
                             if(customVoucherLore.equals("")) {
                                 meta.setLore(loreArrayList);
                             } else {
                                 loreArrayList.clear();
-                                loreArrayList.add(customVoucherLore);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', customVoucherLore));
                                 meta.setLore(loreArrayList);
                             }
                             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -504,13 +506,13 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             }
                             ArrayList<String> loreArrayList = new ArrayList<>();
                             for(String string : namesAndLores.get(index).get(0).get(1).split(" ")){
-                                loreArrayList.add(string);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', string));
                             }
                             if(customVoucherLore.equals("")) {
                                 meta.setLore(loreArrayList);
                             } else {
                                 loreArrayList.clear();
-                                loreArrayList.add(customVoucherLore);
+                                loreArrayList.add(ChatColor.translateAlternateColorCodes('&', customVoucherLore));
                                 meta.setLore(loreArrayList);
                             }
                             PersistentDataContainer container = meta.getPersistentDataContainer();
@@ -623,7 +625,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //            PrintWriter pw = new PrintWriter(sw);
 //            illegalArgumentException.printStackTrace(pw);
 //            Bukkit.getServer().getLogger().severe(sw.toString());
-            sender.sendMessage(invalidCommandMessage());
+            sender.sendMessage(invalidCommandMessage() + " This may be because of the alias that you'r using.");
             return true;
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
 //            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sounds (aliases) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (1.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.19 or at least 1.19.2 minecraft. Please check the console for the full stack trace.");
@@ -631,7 +633,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //            PrintWriter pw = new PrintWriter(sw);
 //            indexOutOfBoundsException.printStackTrace(pw);
 //            Bukkit.getServer().getLogger().severe(sw.toString());
-            sender.sendMessage(invalidCommandMessage());
+            sender.sendMessage(invalidCommandMessage() + " There may be an error in the server files, please contact the server's admins.");
             return true;
         } catch (Exception exception) {
 //            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "Something went wrong, and idk what tbh.");
@@ -639,7 +641,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //            PrintWriter pw = new PrintWriter(sw);
 //            exception.printStackTrace(pw);
 //            Bukkit.getServer().getLogger().severe(sw.toString());
-            sender.sendMessage(invalidCommandMessage());
+            sender.sendMessage(invalidCommandMessage() + " You managed to somehow break the system by giving it an error that we aren't even familiar with. Good job.");
             return true;
         }
     }

@@ -1330,12 +1330,13 @@
 aliases:
   - creeperdeath
   - wolfwhine
+
 sounds:
   creeperdeath:
   - ENTITY_CREEPER_DEATH
   - ENTITY_CREEPER_HURT
   wolfwhine:
-    - WOLF_WHINE
+  - WEATHER_RAIN
 
 voucherNames:
   creeperdeath:

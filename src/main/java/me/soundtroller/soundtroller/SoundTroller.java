@@ -243,25 +243,25 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             int startIndex = 0;
                             int endIndex = 0;
                             if (args.length >= 6) {
-                                if (args[5].startsWith("'") && args[5].endsWith("'")){
-                                    startIndex = args[5].indexOf("'") + 1;
-                                    endIndex = args[5].lastIndexOf("'");
+                                if (args[5].startsWith("|") && args[5].endsWith("|")){
+                                    startIndex = args[5].indexOf("|") + 1;
+                                    endIndex = args[5].lastIndexOf("|");
                                     customVoucherName = args[5].substring(startIndex, endIndex);
 
                                     i = 5;
                                 } else {
-                                        for (i = 5; !(args[i].endsWith("'")); i++) {
-                                            if (i == 5) {
-                                                customVoucherName += args[5].substring(1);
-                                                customVoucherName += " ";
-                                            } else {
-                                                customVoucherName += args[i];
-                                                customVoucherName += " ";
-                                            }
+                                    for (i = 5; !(args[i].endsWith("|")); i++) {
+                                        if (i == 5) {
+                                            customVoucherName += args[5].substring(1);
+                                            customVoucherName += " ";
+                                        } else {
+                                            customVoucherName += args[i];
+                                            customVoucherName += " ";
                                         }
-                                    endIndex = args[i].lastIndexOf("'");
-                                    customVoucherName += args[i].substring(0, endIndex);
                                     }
+                                    endIndex = args[i].lastIndexOf("|");
+                                    customVoucherName += args[i].substring(0, endIndex);
+                                }
 
                                 if (args.length > (i + 1)) {
                                     i++;
@@ -273,7 +273,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //                                        customVoucherLore = args[6].substring(startIndex, endIndex);
 //                                    }
 //                                    else {
-                                        for (i = i; !(args[i].endsWith("'")); i++) {
+                                        for (i = i; !(args[i].endsWith("|")); i++) {
                                             if (i == initialI) {
                                                 customVoucherLore += args[i].substring(1);
                                                 customVoucherLore += " ";
@@ -282,7 +282,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                                 customVoucherLore += " ";
                                             }
                                         }
-                                        endIndex = args[i].lastIndexOf("'");
+                                        endIndex = args[i].lastIndexOf("|");
                                         customVoucherLore += args[i].substring(0, endIndex);
 //                                    }
 
@@ -711,11 +711,11 @@ public final class SoundTroller extends JavaPlugin implements Listener {
     }
 
     public String invalidCommandMessage() {
-        return (getPluginNamePrefix() + ChatColor.RED + "Invalid command. Please do /soundtroll for details on how to use a correct command.");
+        return (getPluginNamePrefix() + ChatColor.RED + "Invalid command. Please do /soundtroller for details on how to use a correct command.");
     }
 
     public String invalidPermissionsMessage() {
-        return (getPluginNamePrefix() + ChatColor.RED + "Invalid permissions. Please do /soundtroll for details on how to use a command that you have access to.");
+        return (getPluginNamePrefix() + ChatColor.RED + "Invalid permissions. Please do /soundtroller for details on how to use a command that you have access to.");
     }
 
     public String noPermissionsMessage() {

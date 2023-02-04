@@ -190,16 +190,19 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 
     @EventHandler
     public void onPlayerChat(AsyncPlayerChatEvent event) {
-        Player player = event.getPlayer();
-        if(lastChatMessageOfPlayers.get(player.getName()).equals("0987654678908765")){
-            event.setCancelled(true);
-            String message = event.getMessage();
-            lastChatMessageOfPlayers.put(player.getName(), message);
-        }
-        else{
-            event.setCancelled(false);
-            String message = event.getMessage();
-            lastChatMessageOfPlayers.put(player.getName(), message);
+        try {
+            Player player = event.getPlayer();
+            if (lastChatMessageOfPlayers.get(player.getName()).equals("0987654678908765")) {
+                event.setCancelled(true);
+                String message = event.getMessage();
+                lastChatMessageOfPlayers.put(player.getName(), message);
+            } else {
+                event.setCancelled(false);
+                String message = event.getMessage();
+                lastChatMessageOfPlayers.put(player.getName(), message);
+            }
+        } catch (NullPointerException exception) {
+            //Do nothing, this is here because of a strange bug where the line Player player = event.getPlayer(); was causing a NullPointerExcepton.
         }
     }
 
@@ -350,14 +353,14 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             int startIndex = 0;
                             int endIndex = 0;
                             if (args.length >= 5) {
-                                if (args[4].startsWith("'") && args[4].endsWith("'")){
-                                    startIndex = args[4].indexOf("'") + 1;
-                                    endIndex = args[4].lastIndexOf("'");
+                                if (args[4].startsWith("|") && args[4].endsWith("|")){
+                                    startIndex = args[4].indexOf("|") + 1;
+                                    endIndex = args[4].lastIndexOf("|");
                                     customVoucherName = args[4].substring(startIndex, endIndex);
 
                                     i = 4;
                                 } else {
-                                    for (i = 4; !(args[i].endsWith("'")); i++) {
+                                    for (i = 4; !(args[i].endsWith("|")); i++) {
                                         if (i == 4) {
                                             customVoucherName += args[4].substring(1);
                                             customVoucherName += " ";
@@ -366,7 +369,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                             customVoucherName += " ";
                                         }
                                     }
-                                    endIndex = args[i].lastIndexOf("'");
+                                    endIndex = args[i].lastIndexOf("|");
                                     customVoucherName += args[i].substring(0, endIndex);
                                 }
 
@@ -379,7 +382,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //                                        customVoucherName = args[5].substring(startIndex, endIndex);
 //                                    }
 //                                    else {
-                                        for (i = i; !(args[i].endsWith("'")); i++) {
+                                        for (i = i; !(args[i].endsWith("|")); i++) {
                                             if (i == initialI) {
                                                 customVoucherLore += args[i].substring(1);
                                                 customVoucherLore += " ";
@@ -388,7 +391,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                                 customVoucherLore += " ";
                                             }
                                         }
-                                        endIndex = args[i].lastIndexOf("'");
+                                        endIndex = args[i].lastIndexOf("|");
                                         customVoucherLore += args[i].substring(0, endIndex);
 //                                    }
 
@@ -450,14 +453,14 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                             int startIndex = 0;
                             int endIndex = 0;
                             if (args.length >= 5) {
-                                if (args[4].startsWith("'") && args[4].endsWith("'")){
-                                    startIndex = args[4].indexOf("'") + 1;
-                                    endIndex = args[4].lastIndexOf("'");
+                                if (args[4].startsWith("|") && args[4].endsWith("|")){
+                                    startIndex = args[4].indexOf("|") + 1;
+                                    endIndex = args[4].lastIndexOf("|");
                                     customVoucherName = args[4].substring(startIndex, endIndex);
 
                                     i = 4;
                                 } else {
-                                    for (i = 4; !(args[i].endsWith("'")); i++) {
+                                    for (i = 4; !(args[i].endsWith("|")); i++) {
                                         if (i == 4) {
                                             customVoucherName += args[4].substring(1);
                                             customVoucherName += " ";
@@ -466,7 +469,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                             customVoucherName += " ";
                                         }
                                     }
-                                    endIndex = args[i].lastIndexOf("'");
+                                    endIndex = args[i].lastIndexOf("|");
                                     customVoucherName += args[i].substring(0, endIndex);
                                 }
 
@@ -479,7 +482,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //                                        customVoucherName = args[5].substring(startIndex, endIndex);
 //                                    }
 //                                  else {
-                                        for (i = i; !(args[i].endsWith("'")); i++) {
+                                        for (i = i; !(args[i].endsWith("|")); i++) {
                                             if (i == initialI) {
                                                 customVoucherLore += args[i].substring(1);
                                                 customVoucherLore += " ";
@@ -488,7 +491,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                                                 customVoucherLore += " ";
                                             }
                                         }
-                                        endIndex = args[i].lastIndexOf("'");
+                                        endIndex = args[i].lastIndexOf("|");
                                         customVoucherLore += args[i].substring(0, endIndex);
 //                                    }
 
@@ -625,7 +628,7 @@ public final class SoundTroller extends JavaPlugin implements Listener {
 //            PrintWriter pw = new PrintWriter(sw);
 //            illegalArgumentException.printStackTrace(pw);
 //            Bukkit.getServer().getLogger().severe(sw.toString());
-            sender.sendMessage(invalidCommandMessage() + " This may be because of the alias that you'r using.");
+            sender.sendMessage(invalidCommandMessage() + " This may be because of the alias that you're using.");
             return true;
         } catch (IndexOutOfBoundsException indexOutOfBoundsException) {
 //            sender.sendMessage(getPluginNamePrefix() + ChatColor.RED + "A Java language IndexOutOfBoundsException occurred. This may be because the minecraft sounds for one or more of the sounds (aliases) in the config.yml contains a sound that does not exist in the version bukkit that this server's main jar file is using or is based on. A full list of supported sounds for the version of spigot that this plugin was made for (1.19.2-R0.1-SNAPSHOT) can be found as a comment in the config.yml file, and that list of available sounds might hold true for all instances of 1.19 or at least 1.19.2 minecraft. Please check the console for the full stack trace.");
@@ -723,49 +726,42 @@ public final class SoundTroller extends JavaPlugin implements Listener {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(ChatColor.DARK_PURPLE + "" + ChatColor.BOLD + "-----------------" + ((getPluginNamePrefix()).replaceAll(" ", "")) + ChatColor.DARK_PURPLE + "------------------" + "\n");
         stringBuilder.append(ChatColor.DARK_PURPLE + "Usage: " + "\n");
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
 
         if(findSoundTrollerTrollBaseStringInSet(sender) || findSoundTrollerTrollPlayerStringAtStartOfStringInSet(sender) || findSoundTrollerTrollAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerTrollPlayerAnyAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
             stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "player <player> <alias> \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForTrollPlayer(sender)) + "\n");
         }
 
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
-
-
         if (findSoundTrollerTrollBaseStringInSet(sender) || findSoundTrollerTrollAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerTrollRandomStringAtStartOfStringInSet(sender) || findSoundTrollerTrollRandomAnyAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
             stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "random <alias> \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForTrollRandom(sender)) + "\n");
         }
 
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
-
         if (findSoundTrollerTrollBaseStringInSet(sender) || findSoundTrollerTrollAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerTrollAllStringAtStartOfStringInSet(sender) || findSoundTrollerTrollAllAnyAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
             stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "all <alias> \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForTrollAll(sender)) + "\n");
         }
 
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
-
-
         if(findSoundTrollerVoucherBaseStringInSet(sender) || findSoundTrollerVoucherPlayerStringAtStartOfStringInSet(sender) || findSoundTrollerVoucherAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerVoucherPlayerAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
-            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher player <receiver> <player/unknown> <alias> ['voucher name'] ['voucher lore'] \n");
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
+            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher player <receiver> <player/unknown> <alias> [|voucher name|] [|voucher lore|] \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForVoucherPlayer(sender)) + "\n");
 //            stringBuilder.append(ChatColor.GREEN + "Note: For best results, please surround" + ChatColor.AQUA + " 'voucher name'" + ChatColor.GREEN + " and " + ChatColor.AQUA + " 'voucher lore' "+ ChatColor.GREEN + " with single quotes." + "\n");
         }
 
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
-
         if (findSoundTrollerVoucherBaseStringInSet(sender) || findSoundTrollerVoucherAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerVoucherBaseStringInSet(sender) || findSoundTrollerVoucherRandomAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
-            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher random <receiver> <alias> ['voucher name'] ['voucher lore'] \n");
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
+            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher random <receiver> <alias> [|voucher name|] [|voucher lore|] \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForVoucherRandom(sender)) + "\n");
 //            stringBuilder.append(ChatColor.GREEN + "Note: For best results, please surround" + ChatColor.AQUA + " 'voucher name'" + ChatColor.GREEN + " and " + ChatColor.AQUA + " 'voucher lore' "+ ChatColor.GREEN + " with single quotes." + "\n");
         }
 
-        stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
-
         if (findSoundTrollerVoucherBaseStringInSet(sender) || findSoundTrollerVoucherAnyAliasStringAtEndOfStringInSet(sender) || findSoundTrollerVoucherBaseStringInSet(sender) || findSoundTrollerVoucherAllAliasStringAtEndOfStringInSet(sender) || (sender instanceof ConsoleCommandSender) || (sender.isOp())) {
-            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher all <receiver> <alias> ['voucher name'] ['voucher lore'] \n");
+            stringBuilder.append(ChatColor.DARK_PURPLE + "--------------------------------------------------" + "\n");
+            stringBuilder.append(ChatColor.AQUA + "/soundtroller " + ChatColor.GREEN + "voucher all <receiver> <alias> [|voucher name|] [|voucher lore|] \n");
             stringBuilder.append(ChatColor.AQUA + "Available Sound Aliases (Categories): " + ChatColor.GREEN + String.join(", ", collectSoundTrollerAnyAvailableAliasesForVoucherAll(sender)) + "\n");
 //            stringBuilder.append(ChatColor.GREEN + "Note: For best results, please surround" + ChatColor.AQUA + " 'voucher name'" + ChatColor.GREEN + " and " + ChatColor.AQUA + " 'voucher lore' "+ ChatColor.GREEN + " with single quotes." + "\n");
         }

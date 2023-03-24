@@ -6,7 +6,7 @@
 
     <groupId>me.soundtroller</groupId>
     <artifactId>SoundTroller</artifactId>
-    <version>1.4.3-SNAPSHOT</version>
+    <version>1.4.4-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>SoundTroller</name>

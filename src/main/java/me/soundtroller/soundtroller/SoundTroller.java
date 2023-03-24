@@ -131,11 +131,19 @@ public final class SoundTroller extends JavaPlugin implements Listener {
                         command = "";
                     }
 
+                    long startTime = System.currentTimeMillis();
                     if (command.contains("unknown")){
                         lastChatMessageOfPlayers.put(player.getName(), "0987654678908765");
                         player.sendMessage(getPluginNamePrefix() + ChatColor.BLUE + "Please enter the name of the player that you would like to troll as a chat message.");
                         while (lastChatMessageOfPlayers.get(player.getName()).equals("0987654678908765")){
-                            continue;
+                            if (System.currentTimeMillis() - startTime > 9500) {
+                                break;
+                            }
+                        }
+
+                        if (System.currentTimeMillis() - startTime > 9500) {
+                            player.sendMessage(getPluginNamePrefix() + ChatColor.RED + "You have taken too long to select a player. Ypu have about ten seconds to do so. Please try again.");
+                            break;
                         }
 
                         Player onlinePlayer = Bukkit.getPlayer(lastChatMessageOfPlayers.get(player.getName()));
